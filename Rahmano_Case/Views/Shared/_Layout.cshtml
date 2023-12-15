@@ -16,14 +16,22 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
+                <table style="width:100%">
+                    <tr>
+                        <td style="width:100px;">
+                            <a class="navbar-brand" href="/"><img src="~/Content/images/Rahmano_Case.png" /></a>
+                        </td>
+                        <td>&nbsp;</td>
+                        <td style="width:150px;text-align:right;">
+                            <ul class="nav navbar-nav">
+                                <li>@Html.ActionLink("Sign In", "Signin", "Users")</li>
+                                <li>@Html.ActionLink("Log In", "Login", "Users")</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
@@ -31,7 +39,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>&copy; @DateTime.Now.Year - Articles Application</p>
         </footer>
     </div>
 
