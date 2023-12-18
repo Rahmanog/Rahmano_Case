@@ -1,7 +1,82 @@
-﻿
+﻿@model Rahmano_Case.Models.UserLogin
+
 @{
     ViewBag.Title = "Login";
 }
 
-<h2>Log-In</h2>
+<h2>Log In</h2>
 
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <label>@Session["User_Name"]</label>
+        <div class="form-group">
+            @Html.LabelFor(model => model.User_Login, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.User_Login, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.User_Login, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.User_Pwd, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.User_Pwd, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.User_Pwd, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-1">
+                <input type="button" id="checkLogin" value="Log In" style="width:90px" class="btn btn-default" />
+            </div>
+            <div class="col-md-1">
+                <a href="/"><input type="button" value="Cancel" style="width:90px" class="btn btn-default" /></a>
+            </div>
+            <div class="col-md-10">
+                &nbsp;
+            </div>
+        </div>
+    </div>
+}
+<div class="form-group">
+    <label class="control-label col-md-2">&nbsp;</label>
+    <div class="col-md-10">
+        @Html.ActionLink("Sign - In", "Signin")
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $("#checkLogin").click(function () {
+            var cust = { "User_Login": "", "User_Pwd": "" };
+            cust.User_Login = $('#User_Login').val();
+            cust.User_Pwd = $('#User_Pwd').val();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("checkLogin")',
+                contentType: 'application/json;',
+                dataType: 'json',
+                data: JSON.stringify(cust),
+                success: function (result) {
+                    //alert(result);
+                    if (result.pesan_id != "0") {
+                        alert(result.pesan_isi);
+                        return false;
+                    } else {
+                        window.location.replace("/");
+                        return false;
+                    }
+                },
+                error: function (ex) {
+                    alert('Gagal');
+                    return false;
+                }
+            });
+        });
+    </script>
+}

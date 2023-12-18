@@ -1,7 +1,76 @@
-﻿
+﻿@model Rahmano_Case.Models.UserSignin
+
 @{
-    ViewBag.Title = "SignIn";
+    ViewBag.Title = "Login";
 }
 
-<h2>Sign-In</h2>
+<h2>Sign In</h2>
 
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.User_Name, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.User_Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.User_Name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.User_Email, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.User_Email, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.User_Email, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.User_Login, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.User_Login, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.User_Login, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.User_Pwd, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.User_Pwd, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.User_Pwd, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">Reenter Password</label>
+        <div class="col-md-10">
+
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-1">
+            <input type="submit" value="Sign In" style="width:90px" class="btn btn-default" />
+        </div>
+        <div class="col-md-1">
+            <a href="/"><input type="button" value="Cancel" style="width:90px" class="btn btn-default" /></a>
+        </div>
+        <div class="col-md-10">
+            &nbsp;
+        </div>
+    </div>
+</div>
+
+}
+<div class="form-group">
+    <label class="control-label col-md-2">&nbsp;</label>
+    <div class="col-md-10">
+        @Html.ActionLink("Log - In", "Login")
+    </div>
+</div>
+
+@section scripts {}

@@ -6,6 +6,7 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -20,14 +21,23 @@
             <div class="navbar-collapse collapse">
                 <table style="width:100%">
                     <tr>
-                        <td style="width:100px;">
+                        <td>
                             <a class="navbar-brand" href="/"><img src="~/Content/images/Rahmano_Case.png" /></a>
                         </td>
-                        <td>&nbsp;</td>
-                        <td style="width:150px;text-align:right;">
+                        <td style="width:100px;">AA&nbsp;</td>
+                        <td align="right" width="20%">
                             <ul class="nav navbar-nav">
-                                <li>@Html.ActionLink("Sign In", "Signin", "Users")</li>
-                                <li>@Html.ActionLink("Log In", "Login", "Users")</li>
+                                @if (Session["User_Name"] != null)
+                                {
+                                    <li id="lNama">@Html.ActionLink(@Session["User_Name"].ToString(), "Biodata", "Users")</li>
+                                    <li id="lLogout"><a href="/">Log Out</a></li>
+                                }
+                                else
+                                {
+                                    <li>@Html.ActionLink("Sign In", "Signin", "Users")</li>
+                                    <li>@Html.ActionLink("Log In", "Login", "Users")</li>
+                                }
+
                             </ul>
                         </td>
                     </tr>
@@ -37,6 +47,8 @@
     </div>
     <div class="container body-content">
         @RenderBody()
+        <br />
+        <br />
         <hr />
         <footer>
             <p>&copy; @DateTime.Now.Year - Articles Application</p>
@@ -44,7 +56,29 @@
     </div>
 
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 </body>
 </html>
+
+<script type="text/javascript">
+    $('#lLogout').click(function () {
+        if (confirm("Apakah anda akan Log out") == true) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("../users/logout")',
+                contentType: 'application/json;',
+                dataType: 'json',
+                success: function (result) {
+                    window.location.replace("/");
+                    window.location.replace("/");
+                },
+                error: function (ex) {
+                    alert('Gagal');
+                    return false;
+                }
+            });
+        }
+    });
+</script>
