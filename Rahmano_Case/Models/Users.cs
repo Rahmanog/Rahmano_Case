@@ -22,8 +22,9 @@ namespace Rahmano_Case.Models
         public string User_Sex { get; set; }
 
         [DisplayName("Birth Date")]
-        public string User_BirthDate { get; set; }
+        public DateTime User_BirthDate { get; set; }
 
+        [DisplayName("Photo")]
         public byte[] User_Photo{ get; set; }
 
         [Required]
@@ -47,7 +48,7 @@ namespace Rahmano_Case.Models
         public Users()
         {
             User_ID = 0;
-            User_Sex = "L";
+            User_Sex = "M";
             Is_Active = "1";
         }
     }

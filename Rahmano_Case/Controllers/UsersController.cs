@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Rahmano_Case.Models;
 using System.Data.SQLite;
+using System.IO;
 
 namespace Rahmano_Case.Controllers
 {
@@ -93,8 +94,10 @@ namespace Rahmano_Case.Controllers
                 usr.User_ID = dr.GetInt16(0);
                 usr.User_Name = dr.GetString(1);
                 usr.User_Sex = dr.GetString(2);
-                usr.User_BirthDate = dr.GetString(3);
-                //usr.User_Sex = dr.GetString(4);
+                usr.User_BirthDate = Convert.ToDateTime(dr["User_BirthDate"].ToString());
+                //usr.User_BirthDate = DateTime.ParseExact(dr["User_BirthDate"].ToString(), "yyyy-mm-dd", System.Globalization.CultureInfo.InvariantCulture);
+                //usr.User_Photo = System.Text.Encoding.Default.GetBytes(dr.GetString(4));
+                usr.User_Photo = (byte[])(dr["User_Photo"]);
                 usr.User_Login = dr.GetString(5);
                 usr.User_Email = dr.GetString(6);
                 usr.User_Pwd = dr.GetString(7);
@@ -106,6 +109,60 @@ namespace Rahmano_Case.Controllers
             return View(usr);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Biodata(Users usr, HttpPostedFileBase file)
+        {
+            Guid uid = Guid.NewGuid();
+            Pesan psn = new Pesan();
+
+            string str = str = "Update Tbl_Users " +
+                    "Set User_Name = @User_Name, " +
+                    "User_Sex = @User_Sex, " +
+                    "User_BirthDate = @User_BirthDate, ";
+            if (file != null) { 
+                usr.User_Photo = simpanGambar(usr.User_ID.ToString(), file);
+                str = str + "User_Photo = @User_Photo, ";
+            }
+            str = str + "User_Login = @User_Login, " +
+                "User_Email = @User_Email, " +
+                "User_GUID = @User_GUID " +
+                "Where User_ID = @User_ID";
+
+
+            con = new SQLiteConnection(cs);
+            cmd = new SQLiteCommand(str, con);
+
+            cmd.Parameters.Add("User_Name", System.Data.DbType.String).Value = usr.User_Name;
+            cmd.Parameters.Add("User_Sex", System.Data.DbType.String).Value = usr.User_Sex;
+            cmd.Parameters.Add("User_BirthDate", System.Data.DbType.String).Value = usr.User_BirthDate.ToString();
+            if (file != null) { cmd.Parameters.Add("User_Photo", System.Data.DbType.Binary).Value = usr.User_Photo; }
+            cmd.Parameters.Add("User_Login", System.Data.DbType.String).Value = usr.User_Login;
+            cmd.Parameters.Add("User_Email", System.Data.DbType.String).Value = usr.User_Email;
+            cmd.Parameters.Add("User_GUID", System.Data.DbType.String).Value = uid;
+            cmd.Parameters.Add("User_ID", System.Data.DbType.Int16).Value = Session["User_ID"];
+
+            con.Open();
+            dr = cmd.ExecuteReader();
+            while (dr.Read())
+            {
+                psn.pesan_id = 0;
+            }
+            return Redirect("../");
+        }
+        private byte[] simpanGambar(string noreg, HttpPostedFileBase file)
+        {
+            //string filelok = Server.MapPath("~") + System.Configuration.ConfigurationManager.AppSettings["folder_img"].ToString();
+            //string photoName = noreg + DateTime.Now.ToString("yy_MM_dd hh_mm_ss") + Path.GetExtension(file.FileName);
+
+            Stream fs = file.InputStream;
+            BinaryReader br = new BinaryReader(fs);
+            byte[] bytes = br.ReadBytes((Int32)fs.Length);
+
+
+            //file.SaveAs(filelok + photoName);
+            return bytes; // photoName;
+        }
         //CHANGE PASSOWRD
         public ActionResult changepass()
         {

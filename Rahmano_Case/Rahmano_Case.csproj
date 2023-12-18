@@ -202,6 +202,7 @@
     <Content Include="Views\Users\Login.cshtml" />
     <Content Include="Views\Users\biodata.cshtml" />
     <Content Include="Views\Users\changepass.cshtml" />
+    <Content Include="Views\Users\Biodata2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
