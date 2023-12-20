@@ -1,0 +1,26 @@
+﻿@model Rahmano_Case.Models.Article
+<div class="col-lg-4 col-md-6 pb-4 filter @Model.Category_Name.Replace(' ','_')">
+    <div class="card">
+        <br />
+        @if (Model.Article_Photo != null)
+        {
+            var imgSrc = $"data:image/jpg;base64,{Convert.ToBase64String(Model.Article_Photo)}";
+            <img id=@("User_Photo") src="@imgSrc" alt="Gambar" style="max-width:90%;max-height:200px;" />
+        }
+        else
+        {
+            <img src="https://lh3.googleusercontent.com/ytP9VP86DItizVX2YNA-xTYzV09IS7rh4WexVp7eilIcfHmm74B7odbcwD5DTXmL0PF42i2wnRKSFPBHlmSjCblWHDCD2oD1oaM1CGFcSd48VBKJfsCi4bS170PKxGwji8CPmehwPw=w200-h247-no" alt="Person" class="card__image">
+        }
+
+        <p class="card__name" style="margin-left:10px;">@Model.Article_Title</p>
+        <br />
+        <div class="grid-containers">
+            <div class="grid-child-posts">156 Post</div>
+            <div class="grid-child-followers">1012 Likes</div>
+        </div>
+        <br />
+        <button class="btns draw-border">@Html.ActionLink("View Article", "Details", new { id = Model.Article_ID })</button>
+        
+    </div>
+    <br />
+</div>

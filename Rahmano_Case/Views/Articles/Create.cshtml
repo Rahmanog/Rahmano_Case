@@ -1,7 +1,179 @@
-﻿
+﻿@model Rahmano_Case.Models.Articles
+
 @{
     ViewBag.Title = "Create";
 }
 
-<h2>Create Articles</h2>
+@using (Html.BeginForm("Create", "Articles", FormMethod.Post, new { id = "registration-form", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
 
+    <div class="form-horizontal">
+        <h2>Articles</h2>
+        <hr />
+        <div hidden="hidden">
+            @Html.EditorFor(model => model.Article_ID, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.EditorFor(model => model.User_id, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.EditorFor(model => model.Article_GUID, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.EditorFor(model => model.Is_Deleted, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.EditorFor(model => model.Category_Name, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Article_Create, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Article_Create, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Category_ID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("Category_ID", ViewBag.Category as SelectList, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Category_ID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Article_Title, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Article_Title, new { htmlAttributes = new { @class = "form-control", @placeholder = "Source", @style = "width: 900px;max-width: 100%;" } })
+                @Html.ValidationMessageFor(model => model.Article_Title, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Article_Photo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (Model.Article_Photo != null)
+                {
+                    var imgSrc = $"data:image/jpg;base64,{Convert.ToBase64String(Model.Article_Photo)}";
+                    <img id=@("Article_Photo") src="@imgSrc" alt="Gambar" style="height:200px;" />
+                }
+                else
+                {
+                    <img id=@("Article_Photo") alt="Gambar" style="width:200px;height:100px;" />
+                }
+                <input type="file" name="file" id="file" style="width: 100%;" onchange="readURL(this.value)" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Article_Desc, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Article_Desc, 5, 40, htmlAttributes: new { @class = "form-control", style = "width: 100%; max-width: 100%;" })
+                @Html.ValidationMessageFor(model => model.Article_Desc, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Article_Text, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Article_Text, htmlAttributes: new { @class = "form-control summernote" })
+                @Html.ValidationMessageFor(model => model.Article_Text, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Is_Publish, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Is_Publish, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.Is_Publish, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Article_Publish, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Article_Publish, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-1">
+                <input type="submit" value="Save" style="width:90px;" class="btn btn-default" />
+            </div>
+            <div class="col-md-1">
+                @if (Model.Article_ID != 0)
+                {
+                    <input type="button" id="cmdDelete" value="Delete" style="width:90px;" class="btn btn-default" />
+                }
+            </div>
+            <div class="col-md-1">
+                @if (Model.Is_Publish == "No" && Model.Article_ID != 0)
+                {
+                    <input type="button" id="cmdPublish" value="Publish" style="width:90px;" class="btn btn-default" />
+                }
+            </div>
+            <div class="col-md-9">&nbsp;</div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "List")
+</div>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('.summernote').summernote({
+                height: 250
+            });
+        });
+
+        $("#file").change(function () {
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#Article_Photo').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+        $('#cmdDelete').click(function () {
+            var r = confirm("Do You wan to Delete this Articles");
+            if (r == true) {
+                var id = $('#Article_ID').val();
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("Delete")',
+                    dataType: 'json',
+                    data: { id: id },
+                    success: function (result) {
+                        alert(result.pesan_isi);
+                        if (result.pesan_id != "0") {
+                            window.location.replace("/");
+                        }
+                        return false;
+                    },
+                    error: function (ex) {
+                        alert(JSON.stringify(ex));
+                        return false;
+                    }
+                });
+            }
+        })
+
+        $('#cmdPublish').click(function () {
+            var id = $('#Article_ID').val();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("publish")',
+                dataType: 'json',
+                data: {id : id},
+                success:  function (result) {
+                    alert(result.pesan_isi);
+                    if (result.pesan_id != "0") {
+                        window.location.replace("/");
+                    }
+                    return false;
+                },
+                error: function (ex) {
+                    alert( JSON.stringify(ex));
+                    return false;
+                }
+            });
+        })
+    </script>
+}

@@ -148,6 +148,7 @@ namespace Rahmano_Case.Controllers
             {
                 psn.pesan_id = 0;
             }
+            Session["User_Name"] = usr.User_Name;
             return Redirect("../");
         }
         private byte[] simpanGambar(string noreg, HttpPostedFileBase file)

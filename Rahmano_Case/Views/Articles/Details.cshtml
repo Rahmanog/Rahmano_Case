@@ -1,7 +1,18 @@
-﻿
+﻿@model Rahmano_Case.Models.Article
+
 @{
     ViewBag.Title = "Details";
 }
 
-<h2>Article</h2>
+<div class="jumbotron">
+    <h3 style="margin-top:-30px;">@Model.Article_Title</h3>
+    <label style="font-weight:100">@Model.Article_Publish</label><label class="navbar-right" style="margin-right:0px;font-weight:100">@Model.User_Name</label>
 
+    <span style="font-style:italic;font-size:large;">
+        <p>@Model.Article_Desc</p>
+    </span>
+    <br /><br />
+    <span style="font-size: large;">
+        <p class="text-secondary">@Html.Raw(Model.Article_Text)</p>
+    </span>
+</div>
