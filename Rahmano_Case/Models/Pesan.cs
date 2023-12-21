@@ -18,4 +18,12 @@ namespace Rahmano_Case.Models
             Keterangan = "";
         }
     }
+    public class comments
+    {
+        public int Article_ID { get; set; }
+        public int User_ID { get; set; }
+        public string Comment_Create { get; set; }
+        public string User_Name { get; set; }
+        public string comment { get; set; }
+    }
 }

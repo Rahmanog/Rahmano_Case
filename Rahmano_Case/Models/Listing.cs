@@ -20,18 +20,22 @@ namespace Rahmano_Case.Models
             isiList dat;
             con = new SQLiteConnection(cs);
 
-            con.Open();
             string str = "Select * From Tbl_Category Where Is_Deleted = '0'";
             var cmd = new SQLiteCommand(str, con);
 
-            dr = cmd.ExecuteReader();
-            while (dr.Read())
+            con.Open();
+            try
             {
-                dat = new isiList();
-                dat.ls_id = dr.GetInt16(0);
-                dat.ls_val= dr.GetString(1);
-                lst.Add(dat);
+                dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    dat = new isiList();
+                    dat.ls_id = dr.GetInt16(0);
+                    dat.ls_val= dr.GetString(1);
+                    lst.Add(dat);
+                }
             }
+            catch (Exception ex) { }
             con.Close();
 
             return lst;

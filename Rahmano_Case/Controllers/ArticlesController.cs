@@ -23,25 +23,31 @@ namespace Rahmano_Case.Controllers
             ArticleHome artH = new ArticleHome();
             con = new SQLiteConnection(cs);
 
-            con.Open();
             string str = "Select * From Tbl_Category Where Is_Deleted = '0'";
             var cmd = new SQLiteCommand(str, con);
             List<Categories> lcat = new List<Categories>();
             Categories cat;
 
-            dr = cmd.ExecuteReader();
-            while (dr.Read())
+            con.Open();
+            try
             {
-                cat = new Categories();
-                cat.Category_ID = dr.GetInt16(0);
-                cat.Category_Name = dr.GetString(1);
-                cat.Category_Desc = dr.GetString(2);
-                lcat.Add(cat);
+                dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    cat = new Categories();
+                    cat.Category_ID = dr.GetInt16(0);
+                    cat.Category_Name = dr.GetString(1);
+                    cat.Category_Desc = dr.GetString(2);
+                    lcat.Add(cat);
+                }
+            }
+            catch (Exception ex)
+            {
+                
             }
             con.Close();
             artH.Categories = lcat;
 
-            con.Open();
             str = "Select Article_ID, A.User_id, U.User_name, Article_Title, A.Category_ID, C.Category_Name, A.Article_Photo, A.Article_Desc, A.Article_Publish " +
                 "From Tbl_Articles A " +
                 "Left join Tbl_Users U on A.User_ID = U.User_ID " +
@@ -52,21 +58,30 @@ namespace Rahmano_Case.Controllers
             List<Article> lart = new List<Article>();
             Article art;
 
-            dr = cmd.ExecuteReader();
-            while (dr.Read())
+            con.Open();
+            try
             {
-                art = new Article();
-                art.Article_ID = dr.GetInt16(0);
-                art.User_id = dr.GetInt16(1);
-                art.User_Name = dr.GetString(2);
-                art.Article_Title = dr.GetString(3);
-                art.Category_ID = dr.GetInt16(4);
-                art.Category_Name = dr.GetString(5);
-                if (dr["Article_Photo"].ToString() != "") { art.Article_Photo = (byte[])(dr["Article_Photo"]); }
-                art.Article_Desc = dr.GetString(7);
-                art.Article_Publish = Convert.ToDateTime(dr["Article_Publish"].ToString());
-                lart.Add(art);
+                dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    art = new Article();
+                    art.Article_ID = dr.GetInt16(0);
+                    art.User_id = dr.GetInt16(1);
+                    art.User_Name = dr.GetString(2);
+                    art.Article_Title = dr.GetString(3);
+                    art.Category_ID = dr.GetInt16(4);
+                    art.Category_Name = dr.GetString(5);
+                    if (dr["Article_Photo"].ToString() != "") { art.Article_Photo = (byte[])(dr["Article_Photo"]); }
+                    art.Article_Desc = dr.GetString(7);
+                    art.Article_Publish = Convert.ToDateTime(dr["Article_Publish"].ToString());
+                    lart.Add(art);
+                }
             }
+            catch (Exception ex)
+            {
+
+            }
+
             con.Close();
             artH.Article = lart;
             return View(artH);
@@ -78,7 +93,6 @@ namespace Rahmano_Case.Controllers
             Int16 id = 0;
             con = new SQLiteConnection(cs);
 
-            con.Open();
             string str = "Select Article_ID, A.User_id, U.User_name, Article_Title, " +
                 "A.Category_ID, C.Category_Name, A.Article_Photo, A.Article_Desc, " +
                 "A.Article_Text, A.Article_Publish " +
@@ -95,30 +109,35 @@ namespace Rahmano_Case.Controllers
 
             cmd.Parameters.Add("User_ID", System.Data.DbType.Int16).Value = id;
 
-            dr = cmd.ExecuteReader();
-            while (dr.Read())
+            con.Open();
+            try
             {
-                art = new Article();
-                art.Article_ID = dr.GetInt16(0);
-                art.User_id = dr.GetInt16(1);
-                art.User_Name = dr.GetString(2);
-                art.Article_Title = dr.GetString(3);
-                art.Category_ID = dr.GetInt16(4);
-                art.Category_Name = dr.GetString(5);
-                if (dr["Article_Photo"].ToString() != "") { art.Article_Photo = (byte[])(dr["Article_Photo"]); }
-                art.Article_Desc = dr.GetString(7);
-                art.Article_Text = dr.GetString(8);
-                if(dr["Article_Publish"].ToString() == "")
+                dr = cmd.ExecuteReader();
+                while (dr.Read())
                 {
-                    art.Article_Publish = Convert.ToDateTime("1/1/1");
-                }
-                else
-                {
-                    art.Article_Publish = Convert.ToDateTime(dr["Article_Publish"].ToString());
-                }
+                    art = new Article();
+                    art.Article_ID = dr.GetInt16(0);
+                    art.User_id = dr.GetInt16(1);
+                    art.User_Name = dr.GetString(2);
+                    art.Article_Title = dr.GetString(3);
+                    art.Category_ID = dr.GetInt16(4);
+                    art.Category_Name = dr.GetString(5);
+                    if (dr["Article_Photo"].ToString() != "") { art.Article_Photo = (byte[])(dr["Article_Photo"]); }
+                    art.Article_Desc = dr.GetString(7);
+                    art.Article_Text = dr.GetString(8);
+                    if(dr["Article_Publish"].ToString() == "")
+                    {
+                        art.Article_Publish = Convert.ToDateTime("1/1/1");
+                    }
+                    else
+                    {
+                        art.Article_Publish = Convert.ToDateTime(dr["Article_Publish"].ToString());
+                    }
 
-                lart.Add(art);
+                    lart.Add(art);
+                }
             }
+            catch (Exception ex) { }
             con.Close();
             return View(lart);
         }
@@ -132,30 +151,31 @@ namespace Rahmano_Case.Controllers
             {                 
                 con = new SQLiteConnection(cs);
 
-                con.Open();
                 string str = "Select * From Tbl_Articles Where Article_ID = @Article_ID ";
                 var cmd = new SQLiteCommand(str, con);
-                //if (Session["User_ID"] != null)
-                //{
-                //    id = (Int16)Session["User_id"];
-                //}
 
                 cmd.Parameters.Add("Article_ID", System.Data.DbType.Int16).Value = id;
 
-                dr = cmd.ExecuteReader();
-                while (dr.Read())
+                con.Open();
+                try
                 {
-                    art.Article_ID = dr.GetInt16(0);
-                    art.User_id = dr.GetInt16(1);
-                    art.Article_Create = dr["Article_Create"].ToString();
-                    art.Article_Title = dr.GetString(3);
-                    art.Category_ID = dr.GetInt16(4);
-                    if (dr["Article_Photo"].ToString() != "") { art.Article_Photo = (byte[])(dr["Article_Photo"]); }
-                    art.Article_Desc = dr.GetString(6);
-                    art.Article_Text = dr.GetString(7);
-                    art.Article_Publish = dr["Article_Publish"].ToString();
-                    if (dr.GetString(9).ToString() == "1") { art.Is_Publish = "Yes"; } else { art.Is_Publish = "No"; }
+                    dr = cmd.ExecuteReader();
+                    while (dr.Read())
+                    {
+                        art.Article_ID = dr.GetInt16(0);
+                        art.User_id = dr.GetInt16(1);
+                        art.Article_Create = dr["Article_Create"].ToString();
+                        art.Article_Title = dr.GetString(3);
+                        art.Category_ID = dr.GetInt16(4);
+                        if (dr["Article_Photo"].ToString() != "") { art.Article_Photo = (byte[])(dr["Article_Photo"]); }
+                        art.Article_Desc = dr.GetString(6);
+                        art.Article_Text = dr.GetString(7);
+                        art.Article_Publish = dr["Article_Publish"].ToString();
+                        if (dr.GetString(9).ToString() == "1") { art.Is_Publish = "Yes"; } else { art.Is_Publish = "No"; }
+                    }
                 }
+                catch (Exception ex ){ }
+
                 con.Close();
             }
             Listing lst = new Listing();
@@ -220,12 +240,18 @@ namespace Rahmano_Case.Controllers
             if (usr.Article_ID != 0) { cmd.Parameters.Add("Article_ID", System.Data.DbType.Int16).Value = usr.Article_ID; }
 
             con.Open();
-            dr = cmd.ExecuteReader();
-            while (dr.Read())
+            try
             {
-                psn.pesan_id = 0;
+                dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    psn.pesan_id = 0;
+                }
             }
-            Session["User_Name"] = usr.User_Name;
+            catch (Exception ex) { }
+            con.Close();
+
+            //Session["User_Name"] = usr.User_Name;
             return Redirect("../");
         }
         private byte[] simpanGambar(HttpPostedFileBase file)
@@ -240,11 +266,12 @@ namespace Rahmano_Case.Controllers
         {
             Pesan psn = new Pesan();
             con = new SQLiteConnection(cs);
-            con.Open();
 
             string str = "Update Tbl_Articles set Is_Publish = '1', Article_Publish = '" + DateTime.Now.ToString("dd/mm/yyyy hh:MM:ss") + "' Where Article_ID = @Article_ID";
             var cmd = new SQLiteCommand(str, con);
             cmd.Parameters.Add("Article_ID", System.Data.DbType.String).Value = id;
+
+            con.Open();
             try
             {
                 dr = cmd.ExecuteReader();
@@ -259,15 +286,16 @@ namespace Rahmano_Case.Controllers
             return Json(psn);
         }
 
-        public JsonResult Delete(int id)
+        public JsonResult Delete(int id = 0)
         {
             Pesan psn = new Pesan();
             con = new SQLiteConnection(cs);
-            con.Open();
 
             string str = "Update Tbl_Articles set Is_Deleted = '1' Where Article_ID = @Article_ID";
             var cmd = new SQLiteCommand(str, con);
             cmd.Parameters.Add("Article_ID", System.Data.DbType.String).Value = id;
+
+            con.Open();
             try
             {
                 dr = cmd.ExecuteReader();
@@ -286,12 +314,16 @@ namespace Rahmano_Case.Controllers
         {
             return View();
         }
-        public ActionResult Details(int id)
+        public ActionResult Details(int id =0)
         {
+            if (id == 0)
+            {
+                return Redirect("/");
+            }
+
             Article art = new Article();
             con = new SQLiteConnection(cs);
 
-            con.Open();
             string str = "Select Article_ID, A.User_id, U.User_name, Article_Title, " +
                 "A.Category_ID, C.Category_Name, A.Article_Photo, A.Article_Desc, " +
                 "A.Article_Text, A.Article_Publish " +
@@ -303,23 +335,95 @@ namespace Rahmano_Case.Controllers
             var cmd = new SQLiteCommand(str, con);
             cmd.Parameters.Add("Article_ID", System.Data.DbType.Int16).Value = id;
 
-            dr = cmd.ExecuteReader();
-            while (dr.Read())
+            con.Open();
+            try
             {
-                art.Article_ID = dr.GetInt16(0);
-                art.User_id = dr.GetInt16(1);
-                art.User_Name = dr.GetString(2);
-                art.Article_Title = dr.GetString(3);
-                art.Category_ID = dr.GetInt16(4);
-                art.Category_Name = dr.GetString(5);
-                if (dr["Article_Photo"].ToString() != "") { art.Article_Photo = (byte[])(dr["Article_Photo"]); }
-                art.Article_Desc = dr.GetString(7);
-                art.Article_Text = dr.GetString(8);
-                art.Article_Publish = Convert.ToDateTime(dr["Article_Publish"].ToString());
+                dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    art.Article_ID = dr.GetInt16(0);
+                    art.User_id = dr.GetInt16(1);
+                    art.User_Name = dr.GetString(2);
+                    art.Article_Title = dr.GetString(3);
+                    art.Category_ID = dr.GetInt16(4);
+                    art.Category_Name = dr.GetString(5);
+                    if (dr["Article_Photo"].ToString() != "") { art.Article_Photo = (byte[])(dr["Article_Photo"]); }
+                    art.Article_Desc = dr.GetString(7);
+                    art.Article_Text = dr.GetString(8);
+                    art.Article_Publish = Convert.ToDateTime(dr["Article_Publish"].ToString());
+                }
+            }
+            catch (Exception ex) { }
+
+            con.Close();
+            ViewBag.Name = Session["User_Name"];
+            ViewBag.ArtID = id;
+
+            return View(art);
+        }
+
+        public JsonResult loadMessage(int id)
+        {
+            Pesan psn = new Pesan();
+            List<comments> lcom = new List<comments>();
+            comments cmt;
+
+            string str = "Select Article_id, C.User_ID, Comment_Cretae, User_Name, Comment " +
+                "From Tbl_Article_Comment C " +
+                "Left Join Tbl_Users U on C.User_ID = U.User_ID " +
+                "Where Article_ID = @Article_ID ANd C.Is_Deleted = '0' " +
+                "Order by Comment_Cretae";
+            con = new SQLiteConnection(cs);
+            cmd = new SQLiteCommand(str, con);
+            cmd.Parameters.Add("Article_ID", System.Data.DbType.Int16).Value = id;
+
+            con.Open();
+            try
+            {
+                dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    cmt = new comments();
+                    cmt.Article_ID = id;
+                    cmt.User_ID = dr.GetInt16(1);
+                    cmt.Comment_Create = dr.GetString(2);
+                    cmt.User_Name = dr.GetString(3);
+                    cmt.comment = dr.GetString(4);
+                    lcom.Add(cmt);
+                }
+            }
+            catch (Exception ex)
+            {
+                psn.pesan_isi = ex.Message;
             }
             con.Close();
 
-            return View(art);
-        }    
+            return Json(lcom);
+        }
+        public JsonResult saveMessage(int id, string wkt, string message)
+        {
+            Pesan psn = new Pesan();
+            string str = "Insert Into Tbl_Article_Comment(Article_ID, User_ID, Comment_Cretae, Comment) " +
+                "Values(@Article_ID, @User_ID, @Comment_Cretae, @Comment)";
+            con = new SQLiteConnection(cs);
+            cmd = new SQLiteCommand(str, con);
+            cmd.Parameters.Add("Article_ID", System.Data.DbType.Int16).Value = id;
+            cmd.Parameters.Add("User_ID", System.Data.DbType.Int16).Value = Session["User_ID"];
+            cmd.Parameters.Add("Comment_Cretae", System.Data.DbType.String).Value = wkt;
+            cmd.Parameters.Add("Comment", System.Data.DbType.String).Value = message;
+
+            con.Open();
+            try
+            {
+                dr = cmd.ExecuteReader();
+            }
+            catch (Exception ex)
+            {
+                psn.pesan_isi = ex.Message;
+            }
+            con.Close();
+
+            return Json(psn);
+        }
     }
 }
