@@ -22,7 +22,7 @@ namespace Rahmano_Case.Controllers
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "My - Profile ";
 
             return View();
         }
