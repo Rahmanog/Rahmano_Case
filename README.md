@@ -6,14 +6,16 @@
 
 ## Chat Feature:
 - SignalR 2.4.3
+#
+
 
 //======= NOTE =======
 #### Idealnya Aplikasi menggunakan DBContext. Namun mengingat keterbatasan waktu, maka untuk akses data sepenuhnya menggunakan ADO.NET 
 //
 
-## Menu:
-(Home)
-Memberikan penjelasan singkat mengenai Aplikasi
+
+## Home
+Memberikan penjelasan singkat mengenai Aplikasi. Dimana Aplikasi ini terdiri dari 3 bagian yaitu:
 
 ## A. User Akses
 Bagian untuk membuat User baru (Sign in) atau Login bagi user yang telah terdata di DataBase.
