@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Rahmano_Case.Controllers
     public class ArticlesController : Controller
     {
         string path = "";
-        string cs = @"URI=file:C:\dayinmitra\Rahmano_Case\Rahmano_Case\Data\SampleDayinMitra.db";
+        string cs = @"URI=file:" + AppContext.BaseDirectory + ConfigurationManager.AppSettings["DB_File"].ToString();
         SQLiteConnection con;
         SQLiteCommand cmd;
         SQLiteDataReader dr;

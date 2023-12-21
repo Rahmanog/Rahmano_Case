@@ -6,13 +6,14 @@ using System.Web.Mvc;
 using Rahmano_Case.Models;
 using System.Data.SQLite;
 using System.IO;
+using System.Configuration;
 
 namespace Rahmano_Case.Controllers
 {
     public class UsersController : Controller
     {
         string path = "";
-        string cs = @"URI=file:C:\dayinmitra\Rahmano_Case\Rahmano_Case\Data\SampleDayinMitra.db";
+        string cs = @"URI=file:" + AppContext.BaseDirectory + ConfigurationManager.AppSettings["DB_File"].ToString();
         SQLiteConnection con;
         SQLiteCommand cmd;
         SQLiteDataReader dr;
